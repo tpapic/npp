@@ -1,0 +1,100 @@
+<?php
+
+use Dingo\Api\Routing\Router;
+use App\Api\V1\Controllers\UserController;
+use App\Api\V1\Controllers\BidStatusController;
+use App\Api\V1\Controllers\GenderController;
+use App\Api\V1\Controllers\BookingCodeController;
+use App\Api\V1\Controllers\CurrencyController;
+use App\Api\V1\Controllers\TicketTypeController;
+use App\Api\V1\Controllers\TravelClassController;
+use App\Api\V1\Controllers\TravelClassTypeController;
+use App\Api\V1\Controllers\AirportController;
+use App\Api\V1\Controllers\BidController;
+use App\Api\V1\Controllers\FlightTypeController;
+use App\Api\V1\Controllers\DashboardController;
+use App\Api\V1\Controllers\PictureController;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Broadcast;
+use App\Exceptions\GeneralExceptionHandler;
+
+/** Register custom exception handling */
+new GeneralExceptionHandler();
+
+/** @var Router $api */
+$api = app(Router::class);
+
+$api->version('v1', function (Router $api) {
+
+    $api->group(['prefix' => 'auth'], function(Router $api) {
+        $api->post('signup', 'App\\Api\\V1\\Controllers\\SignUpController@signUp');
+        $api->post('login', 'App\\Api\\V1\\Controllers\\LoginController@login');
+        $api->post('facebookLogin', 'App\\Api\\V1\\Controllers\\LoginController@facebookLogin');
+        $api->post('googleLogin', 'App\\Api\\V1\\Controllers\\LoginController@googleLogin');
+        $api->post('logout', 'App\\Api\\V1\\Controllers\\LogoutController@logout');
+        
+    });
+
+    $api->group(['middleware' => 'jwt.auth'], function(Router $api) {
+        $api->get('protected', function() {
+            return response()->json([
+                'message' => 'Access to protected resources granted! You are seeing this text as you provided the token correctly.'
+            ]);
+        });
+
+        $api->get('refresh', [
+            'middleware' => 'jwt.refresh',
+            function() {
+                return response()->json([
+                    'message' => 'By accessing this endpoint, you can refresh your access token at each request. Check out this response headers!'
+                ]);
+            }
+        ]);
+
+        $api->get('auth/me', 'App\\Api\\V1\\Controllers\\UserController@me');
+
+
+        /* User */
+        $api->group(['prefix' => 'users'], function () use ($api) {
+            $api->put('/', UserController::class . '@update');
+            $api->put('/change_password', UserController::class . '@changePassword');
+        });
+
+        /* Picture */
+        $api->group(['prefix' => 'pictures'], function () use ($api) {
+            $api->get('/', PictureController::class . '@index');
+            $api->get('/{id}', PictureController::class . '@show');
+            $api->post('/', PictureController::class . '@add');
+            $api->put('/{id}', PictureController::class . '@edit');
+        });
+
+        /* User */
+        $api->group(['prefix' => 'dashboard'], function () use ($api) {
+            $api->get('/', DashboardController::class . '@index');
+        });
+
+    });
+
+    $api->get('ping', function () {
+        try {
+            App\User::first();
+        } catch(\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'reason' => 'error'
+            ]);
+        }
+
+        return response()->json([
+            'success' => true,
+            'reason' => 'pong'
+        ]);
+    });
+
+    $api->get('/all_pictures', PictureController::class . '@allPictures');
+    $api->get('/picture/{id}', PictureController::class . '@show');
+    $api->post('/download', PictureController::class . '@download');
+    $api->get('/download_file/{file}', PictureController::class . '@downloadFile');
+
+
+});

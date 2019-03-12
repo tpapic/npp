@@ -1,0 +1,100 @@
+<?php
+
+namespace DummyNamespace;
+
+use Illuminate\Http\Request;
+use DummyRootNamespaceHttp\Controllers\Controller;
+use App\DummyUppercaseSingular;
+use App\Api\V1\Requests\StoreDummyUppercaseSingular;
+
+class DummyClass extends Controller
+{
+    /**
+         * Display a listing of the resource.
+         *
+         * @return \Illuminate\Http\Response
+         */
+        public function index()
+        {
+            $this->allowIf(['DummyPlural/module', 'DummyPlural/index']);
+            $DummyVariablePlural = DummyUppercaseSingular::paginate(20);
+
+            $response = [
+                'DummyPlural' => $DummyVariablePlural,
+                'success' => true
+            ];
+
+            return $response;
+        }
+
+        /**
+         * Store a newly created resource in storage.
+         *
+         * @param  \App\Api\V1\Requests\StoreDummyUppercaseSingular  $request
+         * @return \Illuminate\Http\Response
+         */
+        public function store(StoreDummyUppercaseSingular $request)
+        {
+            $this->allowIf(['DummyPlural/module', 'DummyPlural/store']);
+            $response = [ 'success' => false ];
+            $DummySingular = DummyUppercaseSingular::create($request->all());
+
+            if(!$DummySingular) {
+                return $response;
+            }
+
+            $response['success'] = true;
+            $response['DummySingular'] = $DummySingular;
+
+            return $response;
+        }
+
+        /**
+         * Display the specified resource.
+         *
+         * @param $id
+         * @return \Illuminate\Http\Response
+         */
+        public function show($id)
+        {
+            $this->allowIf(['DummyPlural/module', 'DummyPlural/show']);
+            return [
+                'success' => true,
+                'DummySingular' => DummyUppercaseSingular::findOrFail($id)
+            ];
+        }
+
+        /**
+         * Update the specified resource in storage.
+         *
+         * @param  \App\Api\V1\Requests\StoreDummyUppercaseSingular  $request
+         * @param $id
+         * @return \Illuminate\Http\Response
+         */
+        public function update(StoreDummyUppercaseSingular $request, $id)
+        {
+            $this->allowIf(['DummyPlural/module', 'DummyPlural/update']);
+            $response = [ 'success' => false ];
+            $DummySingular = DummyUppercaseSingular::findOrFail($id);
+            $DummySingular->update($request->all());
+
+            $response['success'] = true;
+            $response['DummySingular'] = $DummySingular;
+
+            return $response;
+        }
+
+        /**
+         * Remove the specified resource from storage.
+         *
+         * @param  $id
+         * @return \Illuminate\Http\Response
+         */
+        public function destroy($id)
+        {
+            $this->allowIf(['DummyPlural/module', 'DummyPlural/destroy']);
+            $DummySingular = DummyUppercaseSingular::findOrFail($id);
+            $DummySingular->delete();
+            return [ 'success' => true ];
+        }
+}
