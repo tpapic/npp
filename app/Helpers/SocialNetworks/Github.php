@@ -4,54 +4,48 @@ namespace App\Helpers\SocialNetworks;
 
 use Tymon\JWTAuth\JWTAuth;
 use Illuminate\Http\Request;
-use Faker\Generator as Faker;
+use App\Api\V1\Requests\SignUpRequest;
 use App\User;
-use Auth;
+use App\Role;
 
 class Github extends SocialNetwork {
 
   public function register($request) {
-      
-      $data = factory(User::class, 'networks')->make();
-      $data = $data->toArray();
 
-      $socialId = $request->input('social_provider_id');
-      $packageId = $request->input('package_id');
+    $request->merge([
+        'role_id' => Role::getDefault()->id,
+        'verified_token' => $this->generateVerifiedToken(),
+        'social_provider_id' => $this->socialNetworkId,
+        'verified' => 1
+    ]);
 
-      $data['social_provider_id'] = $socialId;
-      $data['package_id'] = $packageId;
+    $data = $request->only([
+        'email', 'password', 'role_id', 'date_of_birth', 'gender_id', 'first_name', 
+        'last_name', 'verified_token', 'social_provider_id', 'verified' ,'package_id']);
 
-      $user = User::where('social_provider_id', $data['social_provider_id'])
+    $matches = User::where('social_provider_id', $data['social_provider_id'])
                     ->where('email', $data['email'])
-                    ->first();
+                    ->count();
 
-      if(isset($user) && !empty($user)) {
-          return $user;
-      }
+    if($matches > 0) {
+        return ['success' => false, 'reason' => 'The email has already been taken with that provider'];
+    }
 
-      $user = User::create($data);
+    $user = User::create($data);
 
-      return $user;
+    return ['success' => true, 'user' => $user];
   }
 
   public function logIn($request, JWTAuth $JWTAuth) {
-    if($user = $this->register($request)) {
-      $token = $JWTAuth->fromUser($user);
-      Auth::login($user);
-      $userRoleActions = Auth::user()->roles->actions()->wherePivot('is_allowed', 1)->get();
-
-      return response()
-        ->json([
+    $data = $this->register($request);
+    if($data['success']) {
+      $token = $JWTAuth->fromUser($data['user']);
+        return response()->json([
             'success' => true,
-            'token' => $token,
-            'user' => [
-                'name' => Auth::user()->full_name,
-                'email' => Auth::user()->email,
-                'role' => Auth::user()->roles,
-                'actions' => $userRoleActions
-            ],
-            'expires_in' => Auth::guard()->factory()->getTTL() * 60
-        ]);
+            'token' => $token
+        ], 201);
+    } else {
+        return $data;
     }
   }
 

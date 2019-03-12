@@ -27,11 +27,9 @@ $api = app(Router::class);
 $api->version('v1', function (Router $api) {
 
     $api->group(['prefix' => 'auth'], function(Router $api) {
-        $api->post('signup', 'App\\Api\\V1\\Controllers\\SignUpController@signUp');
-        $api->post('login', 'App\\Api\\V1\\Controllers\\LoginController@login');
-        $api->post('facebookLogin', 'App\\Api\\V1\\Controllers\\LoginController@facebookLogin');
-        $api->post('googleLogin', 'App\\Api\\V1\\Controllers\\LoginController@googleLogin');
-        $api->post('logout', 'App\\Api\\V1\\Controllers\\LogoutController@logout');
+        $api->post('registration', 'App\\Api\\V1\\Controllers\\AuthController@registration');
+        $api->post('login', 'App\\Api\\V1\\Controllers\\AuthController@login');
+        $api->post('logout', 'App\\Api\\V1\\Controllers\\AuthController@logout');
         
     });
 

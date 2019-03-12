@@ -10,6 +10,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Illuminate\Auth\AuthenticationException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Dingo\Api\Exception\Handler;
+use Illuminate\Validation\ValidationException;
 
 class GeneralExceptionHandler
 {
@@ -86,6 +87,14 @@ class GeneralExceptionHandler
             return response()->json([
                 'success' => false,
                 'reason' => 'data_not_found'
+            ]);
+        });
+
+        app(Handler::class)->register(function (ValidationException $exception) {
+            return response()->json([
+                'success' => false,
+                'reason' => 'validation_error',
+                'errors' => $exception->errors()
             ]);
         });
     }
