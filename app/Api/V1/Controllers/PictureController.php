@@ -37,7 +37,7 @@ class PictureController extends AppController
         $path = public_path('storage/img');
 
         if (!file_exists($path)) {
-            mkdir($path, 777, true);
+            mkdir($path, 0777, true);
         }
 
         $data = $request->input();

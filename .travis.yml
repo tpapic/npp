@@ -1,0 +1,30 @@
+os: linux
+
+dist: xenial
+
+language: php
+
+php:
+  - 7.2
+  - 7.3
+
+before_script:
+  - cp .env.travis .env
+  - composer self-update
+  - composer install --prefer-source --no-interaction --dev
+  - php artisan key:generate
+  - php artisan jwt:secret
+  - php artisan migrate --seed
+
+before_install:
+  - mysql -e 'SHOW VARIABLES LIKE "%version%";'
+  - mysql -e 'CREATE DATABASE homestead_test CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;'
+
+script:
+  - ./vendor/bin/phpunit --coverage-text
+
+services:
+  - mysql
+
+notifications:
+  email: false

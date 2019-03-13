@@ -106,8 +106,7 @@ class User extends Authenticatable implements JWTSubject
         return $this->belongsTo(Package::class);
     }
 
-    public function uplaodPicturePackage($fileSize) { //staviti strategy patern
-        $package = $this->package;
+    public function uplaodPicturePackage($fileSize) {
 
         $package = PackageFactory::getPackageFilter($this->package->name);
         return $package->packageFilter($this->package, $this, $fileSize);
