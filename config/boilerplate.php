@@ -397,5 +397,6 @@ return [
         'validation_rules' => [
             'token' => 'required'
         ]
-    ]
+    ],
+
 ];

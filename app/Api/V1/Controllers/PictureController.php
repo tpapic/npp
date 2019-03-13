@@ -7,6 +7,7 @@ use Intervention\Image\ImageManagerStatic as Image;
 use App\Picture;
 use App\Helpers\Filters\FilterFactory;
 use Auth;
+use App\Api\V1\Requests\PictureStoreRequest;
 
 class PictureController extends AppController
 {
@@ -33,7 +34,7 @@ class PictureController extends AppController
         return ['success' => true, 'data' => $pictures];
     }
 
-    public function add(Request $request) {
+    public function add(PictureStoreRequest $request) {
         $path = public_path('storage/img');
 
         if (!file_exists($path)) {

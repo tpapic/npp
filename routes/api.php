@@ -2,20 +2,8 @@
 
 use Dingo\Api\Routing\Router;
 use App\Api\V1\Controllers\UserController;
-use App\Api\V1\Controllers\BidStatusController;
-use App\Api\V1\Controllers\GenderController;
-use App\Api\V1\Controllers\BookingCodeController;
-use App\Api\V1\Controllers\CurrencyController;
-use App\Api\V1\Controllers\TicketTypeController;
-use App\Api\V1\Controllers\TravelClassController;
-use App\Api\V1\Controllers\TravelClassTypeController;
-use App\Api\V1\Controllers\AirportController;
-use App\Api\V1\Controllers\BidController;
-use App\Api\V1\Controllers\FlightTypeController;
 use App\Api\V1\Controllers\DashboardController;
 use App\Api\V1\Controllers\PictureController;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Broadcast;
 use App\Exceptions\GeneralExceptionHandler;
 
 /** Register custom exception handling */
@@ -66,7 +54,7 @@ $api->version('v1', function (Router $api) {
             $api->put('/{id}', PictureController::class . '@edit');
         });
 
-        /* User */
+        /* Dashboard */
         $api->group(['prefix' => 'dashboard'], function () use ($api) {
             $api->get('/', DashboardController::class . '@index');
         });
