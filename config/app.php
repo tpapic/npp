@@ -169,7 +169,6 @@ return [
         Tymon\JWTAuth\Providers\LaravelServiceProvider::class,
         Dingo\Api\Provider\LaravelServiceProvider::class,
         Barryvdh\Cors\ServiceProvider::class,
-        NotificationChannels\OneSignal\OneSignalServiceProvider::class,
 
         /*
          * Application Service Providers...
@@ -179,8 +178,7 @@ return [
         App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
-        Mpociot\ApiDoc\ApiDocGeneratorServiceProvider::class,
-        Laravel\Socialite\SocialiteServiceProvider::class
+        Mpociot\ApiDoc\ApiDocGeneratorServiceProvider::class
     ],
 
     /*
@@ -233,8 +231,7 @@ return [
          * Package Facades...
          */
         'JWTAuth' => Tymon\JWTAuth\Facades\JWTAuth::class,
-        'JWTFactory' => Tymon\JWTAuth\Facades\JWTFactory::class,
-        'Socialite' => Laravel\Socialite\Facades\Socialite::class
+        'JWTFactory' => Tymon\JWTAuth\Facades\JWTFactory::class
     ],
 
 ];
