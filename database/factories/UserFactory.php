@@ -12,9 +12,9 @@ $factory->defineAs(User::class, 'networks', function (Faker $faker) {
           'verified' => 1,
           'password' => $faker->password,
           'email' => $faker->email,
-          'date_of_birth' => $faker->date($format = 'Y-m-d', $max = 'now'),
-          'gender_id' => rand(1,2),
           'first_name' => $faker->firstName(),
-          'last_name' => $faker->lastName()
+          'last_name' => $faker->lastName(),
+          'package_id' => 1,
+          'curent_daily_upload' => 100
     ];
 });

@@ -17,19 +17,19 @@ class PackagesTableSeeder extends Seeder
                 'name' => 'Free', 
                 'max_daily_upload_limit' => '2', 
                 'curent_daily_upload_limit' => '2', 
-                'max_upload_size' => '100', //kB 
+                'max_upload_size' => '10000', //kB
             ],
             [
                 'name' => 'Pro', 
                 'max_daily_upload_limit' => '4', 
                 'curent_daily_upload_limit' => '4', 
-                'max_upload_size' => '500', //kB 
+                'max_upload_size' => '50000', //kB
             ],
             [
                 'name' => 'Gold', 
                 'max_daily_upload_limit' => '10', 
                 'curent_daily_upload_limit' => '10', 
-                'max_upload_size' => '1000', //kB 
+                'max_upload_size' => '100000', //kB
             ]
         ];
 
