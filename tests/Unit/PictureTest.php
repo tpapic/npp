@@ -81,6 +81,29 @@ class PictureTest extends TestCase
     }
 
     /** @test */
+    public function auth_user_download_picture_successfuly() {
+
+        $filename = base_path('tests/Unit/data/pictureData.json');
+        $dataFile = file_get_contents($filename);
+        $data = json_decode($dataFile, true);
+
+        $response = $this->jsonAuth('POST', '/api/pictures', $data);
+
+        $responseData = json_decode($response->getContent(), true);
+
+        $data = [
+            'id' => $responseData['id'],
+            'filters' => ['Rotate']
+        ];
+
+        $response = $this->call('POST', '/api/download', $data);
+
+        $response->assertJson([
+            'success' => true
+        ]);
+    }
+
+    /** @test */
     public function auth_user_show_picture_failure() {
 
         $this->login();
@@ -109,5 +132,7 @@ class PictureTest extends TestCase
             'success' => true
         ]);
     }
+
+
 
 }

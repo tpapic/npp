@@ -81,11 +81,11 @@ class PictureController extends AppController
                 FilterFactory::factory($imgName, $data['filters'], $path);
             }
             catch (\Exception $e) {
-                return ['success' => false, 'reason' => 'filter_not_found'];
+                return ['success' => false, 'reason' => $e->getMessage()];
             }
         }
 
-        return ['success' => true, 'picture_name' => $imgName];
+        return ['success' => true, 'picture_name' => $imgName, 'id' => $picture->id];
     }
 
     public function show($id)
