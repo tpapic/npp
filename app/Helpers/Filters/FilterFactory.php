@@ -20,6 +20,9 @@ class FilterFactory
     foreach( array_reverse($chain) as $class )
     {
       $class = __NAMESPACE__ . '\\' . $class;
+      if (!class_exists($class)) {
+          throw new \Exception('Filter not found');
+      }
       $instance = new $class( $instance );
     }
     return $instance->filter();

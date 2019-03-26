@@ -3,9 +3,11 @@
 namespace Tests;
 
 use Illuminate\Contracts\Console\Kernel;
+use Illuminate\Filesystem\Filesystem;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use App\User;
+use Illuminate\Support\Facades\Storage;
 
 /**
  * Class TestCase
@@ -52,6 +54,13 @@ abstract class TestCase extends BaseTestCase
         $this->seed();
     }
 
+    public function tearDown()
+    {
+        $path = public_path('/storage/img');
+        $file = new Filesystem;
+        $file->cleanDirectory($path);
+    }
+
     /**
      * Gets a token and logins a user.
      */
@@ -81,5 +90,18 @@ abstract class TestCase extends BaseTestCase
             $headers['Authorization'] = $tokenHeader;
         }
         return $this->json($method, $uri, $data, $headers);
+    }
+
+    public function addPictureToUser() {
+        $data = [
+            'filename' => 'test-test',
+            'description' => 'test desc',
+            'extension' => 'png',
+            'filesize' => '111111'
+        ];
+
+        $picture = $this->user->pictures()->create($data);
+
+        return $picture->id;
     }
 }

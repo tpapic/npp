@@ -8,6 +8,7 @@ use App\Picture;
 use App\Helpers\Filters\FilterFactory;
 use Auth;
 use App\Api\V1\Requests\PictureStoreRequest;
+use Symfony\Component\Debug\Exception\ClassNotFoundException;
 
 class PictureController extends AppController
 {
@@ -73,13 +74,18 @@ class PictureController extends AppController
         $picture->syncHashtags($data['hashtags']);
 
         if(!$picture) {
-            ['success' => false];
+            return ['success' => false];
         }
         if(isset($data['filters']) && !empty($data['filters'])) {
-            FilterFactory::factory($imgName, $data['filters'], $path);
+            try {
+                FilterFactory::factory($imgName, $data['filters'], $path);
+            }
+            catch (\Exception $e) {
+                return ['success' => false, 'reason' => 'filter_not_found'];
+            }
         }
 
-        return ['success' => true];
+        return ['success' => true, 'picture_name' => $imgName];
     }
 
     public function show($id)
