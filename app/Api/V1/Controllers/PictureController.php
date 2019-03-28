@@ -24,9 +24,40 @@ class PictureController extends AppController
         return ['success' => true, 'data' => $pictures];
     }
 
+    public function allPicturesOld(Request $request) {
+        $data = $request->input();
+
+        $query = Picture::query();
+
+        if(isset($data['hashtags_filter']) && !empty($data['hashtags_filter'])) {
+            $query->whereHas('hashtags', function($query) use ($data) {
+                $query->where('name', $data['hashtags_filter']);
+            });
+        }
+
+        if(isset($data['dates_filter']) && !empty($data['dates_filter'])) {
+            $query->whereDate('created_at','>=', $data['dates_filter'][0])
+                ->whereDate('created_at','<=', $data['dates_filter'][1]);
+        }
+
+        if(isset($data['authors_filter']) && !empty($data['authors_filter'])) {
+            $query->whereHas('user', function($query) use ($data) {
+                $query->whereIn('id', $data['authors_filter']);
+            });
+        }
+
+        if(isset($data['size_filter']) && !empty($data['size_filter'])) {
+            $query->where('filesize', $data['size_filter']['operator'], $data['size_filter']['filesize']);
+        }
+
+        $pictures = $query->get();
+
+        return ['success' => true, 'data' => $pictures];
+    }
+
     public function allPictures(Request $request) {
         $data = $request->input();
-//        dd($data);
+
         $query = Picture::query();
 
         if(isset($data['hashtags_filter']) && !empty($data['hashtags_filter'])) {
