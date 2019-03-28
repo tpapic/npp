@@ -40,7 +40,6 @@ class PictureTest extends TestCase
 
         $response = $this->jsonAuth('POST', '/api/pictures', $data);
 
-
         $response->assertExactJson([
             'success' => false,
             'reason' => 'filter_not_found'
