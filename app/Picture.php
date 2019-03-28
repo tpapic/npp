@@ -78,7 +78,7 @@ class Picture extends Model
     }
 
     public function scopeUploadDateFilter($query, $data) {
-        return $query->whereDate('created_at','<=', $data[0])
-                    ->whereDate('created_at','>=', $data[1]);
+        return $query->whereDate('created_at','>=', $data[0])
+                    ->whereDate('created_at','<=', $data[1]);
     }
 }

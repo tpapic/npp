@@ -24,13 +24,28 @@ class PictureController extends AppController
         return ['success' => true, 'data' => $pictures];
     }
 
-    public function allPictures() {
-        $fitlerSize = ['operator' => '>', 'filesize' => '1915866'];
-        $pictures = Picture::hashtagsFilter(['tom'])
-                            // ->uploadDateFilter(['2018-01-01','2018-12-31'])
-                            ->authorFilter([3])
-                            ->get();
-        // ->sizeFilter($fitlerSize)
+    public function allPictures(Request $request) {
+        $data = $request->input();
+//        dd($data);
+        $query = Picture::query();
+
+        if(isset($data['hashtags_filter']) && !empty($data['hashtags_filter'])) {
+            $query = $query->hashtagsFilter($data['hashtags_filter']);
+        }
+
+        if(isset($data['dates_filter']) && !empty($data['dates_filter'])) {
+            $query = $query->uploadDateFilter($data['dates_filter']);
+        }
+
+        if(isset($data['authors_filter']) && !empty($data['authors_filter'])) {
+            $query = $query->authorFilter($data['authors_filter']);
+        }
+
+        if(isset($data['size_filter']) && !empty($data['size_filter'])) {
+            $query = $query->sizeFilter($data['size_filter']);
+        }
+
+        $pictures = $query->get();
 
         return ['success' => true, 'data' => $pictures];
     }
@@ -44,7 +59,7 @@ class PictureController extends AppController
 
         $data = $request->input();
 
-        $imgName = time() .$data['filename'];
+        $imgName = time() . '-' .$data['filename'];
         $user = Auth::user();
         
         $orginalImg = $path . '/' . $imgName;
