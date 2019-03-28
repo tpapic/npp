@@ -24,9 +24,10 @@ class PictureTest extends TestCase
 
         $response = $this->jsonAuth('POST', '/api/pictures', $data);
 
-        $response->assertJson([
-            'success' => true
-        ]);
+        $response->assertSuccessful()
+                 ->assertJson([
+                     'success' => true
+                 ]);
     }
 
     /** @test */
@@ -40,10 +41,11 @@ class PictureTest extends TestCase
 
         $response = $this->jsonAuth('POST', '/api/pictures', $data);
 
-        $response->assertExactJson([
-            'success' => false,
-            'reason' => 'filter_not_found'
-        ]);
+        $response->assertSuccessful()
+                 ->assertExactJson([
+                     'success' => false,
+                     'reason' => 'filter_not_found'
+                 ]);
 
     }
 
@@ -56,13 +58,13 @@ class PictureTest extends TestCase
 
         $response = $this->jsonAuth('POST', '/api/pictures', $data);
 
-        $response->assertJson([
-            'success' => false
-        ]);
-
-        $response->assertJsonValidationErrors([
-            'filename', 'description', 'hashtags', 'file'
-        ]);
+        $response->assertSuccessful()
+                 ->assertJson([
+                    'success' => false
+                 ])
+                 ->assertJsonValidationErrors([
+                     'filename', 'description', 'hashtags', 'file'
+                 ]);
 
     }
 
@@ -74,9 +76,10 @@ class PictureTest extends TestCase
 
         $response = $this->jsonAuth('GET', '/api/pictures/' . $id);
 
-        $response->assertJson([
-            'success' => true
-        ]);
+        $response->assertSuccessful()
+                 ->assertJson([
+                     'success' => true
+                 ]);
     }
 
     /** @test */
@@ -97,9 +100,10 @@ class PictureTest extends TestCase
 
         $response = $this->call('POST', '/api/download', $data);
 
-        $response->assertJson([
-            'success' => true
-        ]);
+        $response->assertSuccessful()
+                 ->assertJson([
+                     'success' => true
+                 ]);
     }
 
     /** @test */
@@ -109,10 +113,11 @@ class PictureTest extends TestCase
 
         $response = $this->jsonAuth('GET', '/api/pictures/12312311');
 
-        $response->assertExactJson([
-            'success' => false,
-            'reason' => 'model_not_found'
-        ]);
+        $response->assertSuccessful()
+                 ->assertExactJson([
+                     'success' => false,
+                     'reason' => 'model_not_found'
+                 ]);
     }
 
     /** @test */
@@ -127,12 +132,40 @@ class PictureTest extends TestCase
 
         $response = $this->jsonAuth('PUT', '/api/pictures/' . $id, $data);
 
-        $response->assertExactJson([
-            'success' => true
-        ]);
+        $response->assertSuccessful()
+                 ->assertExactJson([
+                     'success' => true
+                 ]);
     }
 
+    /** @test */
+    public function get_all_pictures_successfuly() {
+        $response = $this->call('GET', '/api/all_pictures');
 
+        $response->assertSuccessful()
+                 ->assertJsonFragment(['success' => true, 'data']);
+    }
+
+    /** @test */
+    public function get_user_dashboard_info_successfuly() {
+        $response = $this->jsonAuth('GET', '/api/dashboard');
+
+        $response->assertSuccessful()
+                 ->assertJson([
+                     'success' => true,
+                     'data' => []
+                 ]);
+    }
+    /** @test */
+    public function get_ping_pong_successfuly() {
+        $response = $this->jsonAuth('GET', '/api/ping');
+
+        $response->assertSuccessful()
+                 ->assertExactJson([
+                     'success' => true,
+                     'data' => 'pong'
+                 ]);
+    }
 
 
 

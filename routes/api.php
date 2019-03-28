@@ -73,7 +73,7 @@ $api->version('v1', function (Router $api) {
 
         return response()->json([
             'success' => true,
-            'reason' => 'pong'
+            'data' => 'pong'
         ]);
     });
 
